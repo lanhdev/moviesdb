@@ -30,9 +30,9 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-[MoviesDb Walkthrough](http://i.imgur.com/L5tyZ8P.gif)
+![MoviesDb Walkthrough](http://i.imgur.com/L5tyZ8P.gif)
 
-URL: http://i.imgur.com/XTrFUYm.gif
+URL: http://i.imgur.com/L5tyZ8P.gif
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
