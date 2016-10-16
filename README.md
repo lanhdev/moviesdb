@@ -32,11 +32,12 @@ Here's a walkthrough of implemented user stories:
 
 ![Video Walkthrough](http://i.imgur.com/XTrFUYm.gif)
 
+URL: http://i.imgur.com/XTrFUYm.gif
+
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
-
-Describe any challenges encountered while building the app.
+- Please click the URL to see Video Walkthrough because GIF file is too large
 
 ## License
 
