@@ -77,16 +77,23 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
     searchActive = false
     searchBar.endEditing(true)
+    self.moviesTableView.reloadData()
   }
   
   func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     searchActive = false
     searchBar.endEditing(true)
+    fullOrFiltered = movies
+    searchBar.text = ""
+    self.moviesTableView.reloadData()
   }
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     searchActive = false
     searchBar.endEditing(true)
+    fullOrFiltered = moviesSearch
+    searchBar.text = ""
+    self.moviesTableView.reloadData()
   }
   
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -95,7 +102,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   }
   
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    
     moviesSearch = movies.filter({ (text) -> Bool in
       let tmpTitle = text["title"] as! String
       let range = tmpTitle.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
@@ -103,8 +109,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     })
     if searchText == "" {
       searchActive = false
+      fullOrFiltered = movies
     } else {
       searchActive = true
+      fullOrFiltered = moviesSearch
     }
     self.moviesTableView.reloadData()
   }
@@ -234,8 +242,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     // Pass the selected object to the new view controller.
     let cell = sender as! UITableViewCell
     let indexPath = moviesTableView.indexPath(for: cell)
-    let movie = movies[(indexPath?.row)!]
-    
+    let movie = searchActive ? moviesSearch[(indexPath?.row)!] : movies[(indexPath?.row)!]
+
     let detailsVC = segue.destination as! DetailsViewController
     detailsVC.movie = movie
   }
