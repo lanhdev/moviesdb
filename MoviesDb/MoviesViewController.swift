@@ -11,17 +11,21 @@ import AFNetworking
 import MBProgressHUD
 import ReachabilitySwift
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
   
   @IBOutlet weak var moviesTableView: UITableView!
   @IBOutlet weak var networkErrorView: UIView!
   
   var movies = [NSDictionary]()
   var endpoint: String = "now_playing"
+  var searchActive: Bool = false
+  var moviesSearch = [NSDictionary]()
+  var fullOrFiltered = [NSDictionary]()
   
   let baseUrl = "https://image.tmdb.org/t/p/w342"
   let refreshControl = UIRefreshControl()
   let reachability = Reachability()
+  let searchBar = UISearchBar()
   
   struct data {
     static let barColor = UIColor.darkGray
@@ -36,7 +40,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     moviesTableView.dataSource = self
     moviesTableView.delegate = self
     networkErrorView.isHidden = true
-    
+    initializeSearchBar()
     loadTheme()
     
     refreshControl.addTarget(self, action: #selector(MoviesViewController.loadMovies), for: UIControlEvents.valueChanged)
@@ -58,6 +62,51 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  func initializeSearchBar() {
+    searchBar.delegate = self
+    searchBar.placeholder = "Search"
+    navigationItem.titleView = searchBar
+  }
+  
+  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+    searchActive = true
+  }
+  
+  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    searchActive = false
+    searchBar.endEditing(true)
+  }
+  
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchActive = false
+    searchBar.endEditing(true)
+  }
+  
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    searchActive = false
+    searchBar.endEditing(true)
+  }
+  
+  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    searchActive = false
+    searchBar.endEditing(true)
+  }
+  
+  func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    
+    moviesSearch = movies.filter({ (text) -> Bool in
+      let tmpTitle = text["title"] as! String
+      let range = tmpTitle.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+      return range != nil
+    })
+    if searchText == "" {
+      searchActive = false
+    } else {
+      searchActive = true
+    }
+    self.moviesTableView.reloadData()
   }
   
   func loadTheme() {
@@ -122,24 +171,28 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    if searchActive {
+      return moviesSearch.count
+    }
     return movies.count
   }
   
-  // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-  // Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
-  
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    //    let cell = UITableViewCell()
-    //    cell.textLabel?.text = movies[indexPath.row]["title"] as? String //String(indexPath.row)
     let cell = moviesTableView.dequeueReusableCell(withIdentifier: "movieCell") as! MovieCell
     
-    let title = movies[indexPath.row]["title"] as? String
+    if searchActive {
+      fullOrFiltered = moviesSearch
+    } else {
+      fullOrFiltered = movies
+    }
+    
+    let title = fullOrFiltered[indexPath.row]["title"] as? String
     cell.titleLabel.text = title
     
-    let overview = movies[indexPath.row]["overview"] as? String
+    let overview = fullOrFiltered[indexPath.row]["overview"] as? String
     cell.overviewLabel.text = overview
     
-    if let posterPath = movies[indexPath.row]["poster_path"] as? String {
+    if let posterPath = fullOrFiltered[indexPath.row]["poster_path"] as? String {
       let posterUrl = baseUrl + posterPath
       let posterRequest = URLRequest(url: URL(string: posterUrl)!)
       cell.posterView.setImageWith(posterRequest, placeholderImage: nil, success: {

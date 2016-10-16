@@ -23,7 +23,7 @@
                                         <rect key="frame" x="0.0" y="92" width="320" height="131"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wRv-OB-E9z" id="hnJ-uo-L30">
-                                            <frame key="frameInset" width="287" height="130.5"/>
+                                            <frame key="frameInset" width="287" height="130"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="T0b-0t-dcd">
@@ -84,7 +84,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="618" y="154"/>
+            <point key="canvasLocation" x="496" y="154"/>
         </scene>
         <!--Description-->
         <scene sceneID="beg-dH-6CZ">
@@ -155,7 +155,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Au-jm-XV0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1018" y="154"/>
+            <point key="canvasLocation" x="921" y="154"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="v76-HI-LIU">
