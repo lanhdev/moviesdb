@@ -30,7 +30,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   struct data {
     static let barColor = UIColor.darkGray
     static let backgroundColor = UIColor.darkGray
-    static let textColor = UIColor(red: 255.0 / 255.0, green: 204.0 / 255.0, blue: 0.0 / 255.0, alpha: 1.0)
+    static let foregroundColor = UIColor(red: 255.0 / 255.0, green: 204.0 / 255.0, blue: 0.0 / 255.0, alpha: 1.0)
   }
   
   override func viewDidLoad() {
@@ -66,6 +66,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   
   func initializeSearchBar() {
     searchBar.delegate = self
+    searchBar.showsCancelButton = true
     searchBar.placeholder = "Search"
     navigationItem.titleView = searchBar
   }
@@ -83,16 +84,16 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     searchActive = false
     searchBar.endEditing(true)
-    fullOrFiltered = movies
     searchBar.text = ""
+    fullOrFiltered = movies
     self.moviesTableView.reloadData()
   }
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     searchActive = false
     searchBar.endEditing(true)
-    fullOrFiltered = moviesSearch
     searchBar.text = ""
+    fullOrFiltered = moviesSearch
     self.moviesTableView.reloadData()
   }
   
@@ -102,27 +103,27 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   }
   
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    if searchText == "" {
+      searchActive = false
+    } else {
+      searchActive = true
+    }
+    
     moviesSearch = movies.filter({ (text) -> Bool in
       let tmpTitle = text["title"] as! String
       let range = tmpTitle.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
       return range != nil
     })
-    if searchText == "" {
-      searchActive = false
-      fullOrFiltered = movies
-    } else {
-      searchActive = true
-      fullOrFiltered = moviesSearch
-    }
+
     self.moviesTableView.reloadData()
   }
   
   func loadTheme() {
     navigationController?.navigationBar.barTintColor = data.barColor
-    navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: data.textColor]
-    navigationController?.navigationBar.tintColor = data.textColor // Set text color for back button
+    navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: data.foregroundColor]
+    navigationController?.navigationBar.tintColor = data.foregroundColor // Set text color for back button
     tabBarController?.tabBar.barTintColor = data.barColor
-    tabBarController?.tabBar.tintColor = data.textColor
+    tabBarController?.tabBar.tintColor = data.foregroundColor
     view.backgroundColor = data.backgroundColor
   }
   
@@ -181,8 +182,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if searchActive {
       return moviesSearch.count
+    } else {
+      return movies.count
     }
-    return movies.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -226,6 +228,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     } else {
       cell.posterView.image = nil
     }
+    
+    let backgroundView = UIView()
+    backgroundView.backgroundColor = data.foregroundColor
+    cell.selectedBackgroundView = backgroundView
 
     return cell
   }
