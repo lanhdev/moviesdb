@@ -71,16 +71,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     navigationItem.titleView = searchBar
   }
   
-  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    searchActive = true
-  }
-  
-  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-    searchActive = false
-    searchBar.endEditing(true)
-    self.moviesTableView.reloadData()
-  }
-  
   func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     searchActive = false
     searchBar.endEditing(true)
@@ -90,9 +80,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
   }
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    searchActive = false
+    searchActive = true
     searchBar.endEditing(true)
-    searchBar.text = ""
     fullOrFiltered = moviesSearch
     self.moviesTableView.reloadData()
   }
